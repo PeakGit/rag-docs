@@ -1,91 +1,113 @@
 {
   "$schema": "https://mintlify.com/schema.json",
-  "name": "Starter Kit",
+  "name": "Peak RAG Framework",
   "logo": {
-    "dark": "/logo/dark.svg",
-    "light": "/logo/light.svg"
+    "dark": "/logo/peakrag-inverse.svg",
+    "light": "/logo/peakrag.svg"
   },
   "favicon": "/favicon.svg",
   "colors": {
-    "primary": "#0D9373",
-    "light": "#07C983",
-    "dark": "#0D9373",
+    "primary": "#006EB5",
+    "light": "#006EB5",
+    "dark": "#006EB5",
     "anchors": {
       "from": "#0D9373",
-      "to": "#07C983"
+      "to": "#006EB5"
     }
-  },
-  "topbarLinks": [
-    {
-      "name": "Support",
-      "url": "mailto:hi@mintlify.com"
-    }
-  ],
-  "topbarCtaButton": {
-    "name": "Dashboard",
-    "url": "https://dashboard.mintlify.com"
   },
   "tabs": [
     {
-      "name": "API Reference",
-      "url": "api-reference"
+      "name": "Vectorization",
+      "url": "vectorization"
+    },
+    {
+      "name": "Tool Repository",
+      "url": "tools"
+    },
+    {
+      "name": "SDK",
+      "url": "sdk"
     }
   ],
   "anchors": [
     {
-      "name": "Documentation",
+      "name": "CODA docs",
       "icon": "book-open-cover",
-      "url": "https://mintlify.com/docs"
+      "url": "https://coda.io/d/Peak-Innovations_d2eP0_r5FYY/RAG-2-0-specifications_sufBR-2Q"
     },
     {
-      "name": "Community",
-      "icon": "slack",
-      "url": "https://mintlify.com/community"
-    },
-    {
-      "name": "Blog",
-      "icon": "newspaper",
-      "url": "https://mintlify.com/blog"
+      "name": "Miro",
+      "icon": "arrow-progress",
+      "url": "https://miro.com/app/board/uXjVLXk-uqc=/"
     }
   ],
   "navigation": [
     {
-      "group": "Get Started",
+      "group": "Framework",
+      "pages": ["introduction", "principles", "use-cases"]
+    },
+    {
+      "group": "Core Concepts",
       "pages": [
-        "introduction",
-        "quickstart",
-        "development"
+        "concept/applications",
+        "concept/tool-repository",
+        "concept/agents",
+        "concept/pipelines",
+        "concept/vectorization"
       ]
     },
     {
-      "group": "Essentials",
+      "group": "Agents",
       "pages": [
-        "essentials/markdown",
-        "essentials/code",
-        "essentials/images",
-        "essentials/settings",
-        "essentials/navigation",
-        "essentials/reusable-snippets"
+        "agents/digital-accountant",
+        "agents/hyperpersonalized-learning",
+        "agents/knowledge-base-retriever"
       ]
     },
     {
-      "group": "API Documentation",
+      "group": "Vectorization",
       "pages": [
-        "api-reference/introduction"
+        "vectorization/ingestion",
+        "vectorization/weaviate",
+        "vectorization/retrieval",
+        "vectorization/hybrid",
+        "vectorization/reranking",
+        "vectorization/hyde",
+        "vectorization/contextual-retrieval"
+
       ]
     },
     {
-      "group": "Endpoint Examples",
+      "group": "Tool Capabilities",
       "pages": [
-        "api-reference/endpoint/get",
-        "api-reference/endpoint/create",
-        "api-reference/endpoint/delete"
+        "tools/auth",
+        "tools/system-wide-arguments",
+        "tools/intention-caching",
+        "tools/tool-argument-based-caching"
       ]
+    },
+    {
+      "group": "Tool Repository",
+      "pages": [
+        "tools/retrieve-knowledge",
+        "tools/fetch-foreign-exchange-api",
+        "tools/get-sql-schema",
+        "tools/run-sql",
+        "tools/interpret-python",
+        "tools/interpret-typescript",
+        "tools/translate-text",
+        "tools/save-chart-dataset",
+        "tools/get-user-transactions",
+        "tools/get-user-bank-accounts",
+        "tools/get-user-partners",
+        "tools/get-user-banks",
+        "tools/get-user-companies",
+        "tools/get-user-organization"
+      ]
+    },
+    {
+      "group": "SDK",
+      "pages": ["sdk/react-integration","sdk/web-sdk"]
     }
-  ],
-  "footerSocials": {
-    "x": "https://x.com/mintlify",
-    "github": "https://github.com/mintlify",
-    "linkedin": "https://linkedin.com/company/mintlify"
-  }
+  ]
 }
