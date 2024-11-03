@@ -1,0 +1,38 @@
+---
+title: Contextual Retrieval
+description: 
+---
+
+## Overview
+
+In the RAG framework, Contextual Retrieval is enhanced by generating context for each chunk of text based on surrounding content. This approach ensures that each chunk is accurately positioned within its broader document context, improving the relevance of search results. By embedding this generated context as “Context” in the vector database, we create a more semantically informed retrieval system that is especially effective for nuanced queries.
+
+## How Surrounding Text Context Generation Works
+
+To improve the relevance of retrieved information, the RAG framework generates a succinct context for each chunk of a document by using the surrounding text. This added context helps search algorithms better understand the role and relevance of each chunk within its document, enabling more precise matching with user queries.
+
+### Process Overview
+<Steps>
+	<Step title="Context Prompt Creation">
+		For each chunk, a prompt is created that includes text from the surrounding pages, alongside the specific chunk content. This prompt instructs the AI model to generate a brief contextual summary, placing the chunk in context within the document.
+	</Step>
+	<Step title="OpenAI API Call">
+		The RAG framework uses OpenAI’s API (with a cost-efficient model) to process the prompt and generate a concise context based on the surrounding text. This context encapsulates the essence of the chunk and its relationship to the rest of the document.
+	</Step>
+	<Step title="Embedding and Storage">
+		The generated context is saved as a separate property (“Context”) in the vector database, with an associated vector index. This indexing allows the framework to use the context during similarity searches, improving retrieval relevance for queries that rely on document structure or specific thematic content.
+	</Step>
+</Steps>    
+
+## Sample Setup
+
+```xml
+<document>
+${surroundingText}
+</document>
+Here is the chunk we want to situate within the surrounding pages:
+<chunk>
+${chunkContent}
+</chunk>
+Please give a short, succinct context to situate this chunk within the surrounding pages for the purposes of improving search retrieval of the chunk. Answer only with the succinct context and nothing else. Use the same language as the surrounding text.
+```

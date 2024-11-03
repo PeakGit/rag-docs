@@ -1,0 +1,72 @@
+---
+title: Run SQL
+---
+
+## Description
+The Run SQL tool allows the execution of custom SQL queries on the database using Prisma’s raw query capabilities. This tool is intended for direct SQL access, enabling agents to retrieve database information as specified in the query.
+
+<Warning>
+**Status**: ***Under Testing***. This tool is in a testing phase, and security measures for error handling and SQL injection prevention are not fully implemented.
+</Warning>
+
+<Tip>
+**Database Connection**: Managed by Prisma Client  
+This tool uses Prisma’s `$queryRawUnsafe` function to execute SQL queries dynamically.
+</Tip>
+
+## Arguments
+- `query (string)`: The SQL query to be executed. 
+
+## Example Configuration
+```typescript
+export const runSQL = {
+    type: "function" as const,
+    function: {
+        name: "run_sql",
+        description: "Run a SQL query on the database",
+        parameters: {
+            type: "object",
+            properties: {
+                query: {
+                    type: "string",
+                    description: "The SQL query to run. Use double quotes for table and column names.",
+                },
+            },
+            required: ["query"],
+        },
+    },
+};
+
+```
+## Example Usage
+1. User Query: “Show the last two transactions from the Transaction table.”
+2. Agent Invocation: The agent calls run_sql with a SQL query like:
+```typescript
+run_sql({ query: "SELECT * FROM Transaction ORDER BY transaction_date DESC LIMIT 2" });
+```
+3. Response: The tool returns the specified transaction data in descending order by date.
+
+## Response Handling
+- Successful Response: If the query executes successfully, the function returns an object with:
+    - `result`: The query results as an array of records.
+- Error Handling: If the query fails, an error message and the original query are returned for debugging.
+
+Example Response
+```json
+{
+    "result": [
+        {
+            "amount": 250.75,
+            "transaction_date": "2023-10-05",
+            "details": "Payment received",
+            "comment": "Invoice #1234"
+        },
+        {
+            "amount": 150.00,
+            "transaction_date": "2023-10-01",
+            "details": "Service fee",
+            "comment": "Monthly service"
+        }
+    ]
+}
+```

@@ -1,0 +1,16 @@
+---
+title: System-Wide Arguments
+---
+
+## Description
+System-wide arguments are standardized parameters available to all tools within the RAG framework. These arguments provide essential contextual information, enabling tools to operate with user-specific, session-specific, and intention-specific data. The inclusion of these parameters allows each tool to function cohesively within the broader system.
+
+1. **`userId`**:
+- **Description**: Unique identifier for the current user.
+- **Usage**: Passed to tools to ensure data access and retrieval are specific to the user, enabling secure, personalized operations.
+2. **`intention`**:
+- **Description**: A brief description of the user’s purpose or query, providing context for the tool’s actions.
+- **Usage**: Helps tools align their processing to the user’s intended outcome, ensuring responses are relevant and contextually accurate.
+3. **`threadId`**:
+- **Description**: Unique identifier for the conversation or session thread.
+- **Usage**: Allows tools to manage and track data across a conversation, providing continuity within a single user interaction.

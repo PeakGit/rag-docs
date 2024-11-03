@@ -1,0 +1,36 @@
+---
+title: Get User Partners
+---
+
+## Description
+The Get User Partners tool retrieves the financial partners of the current user. Partners can be companies or individuals with whom the user has financial relationships, such as transaction addressees or senders. The result is provided as a comma-separated string of partner names.
+
+<Tip>
+**Database Connection**: Managed by Prisma Client  
+</Tip>
+
+## Arguments
+- None
+
+## Example Configuration
+```typescript
+export const getUserPartners = {
+    type: "function" as const,
+    function: {
+        name: "get_user_partners",
+        description: "Get the partners of the current user. Partners are companies or people that the user has financial relationships with. Can be an addressee or a sender of transactions. The result is a string with the partner names separated by commas.",
+    },
+};
+```
+
+## Response Handling
+
+- Successful Response: If the partners are retrieved successfully, the function returns a comma-separated string of partner names.
+- Error Handling: If no partners are found, the function returns "None".
+
+Example Response
+```json
+{
+    "result": "Partner A, Partner B, Partner C"
+}
+```

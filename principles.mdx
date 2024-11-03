@@ -1,0 +1,37 @@
+---
+title: Principles
+---
+
+The RAG framework is built on a set of core principles designed to deliver flexible, context-driven AI solutions across applications. Each of the following core concepts is a key component of the framework.
+
+## Core Concepts
+
+<Card title="Applications" href="/concept/applications">
+  Each application using the RAG framework has its own configuration, tailored
+  to its unique requirements. Applications can define specific system prompts,
+  custom tools, enabled agents, and LLM model preferences to align with their
+  individual workflows and data needs.
+</Card>
+<Card title="Tool Repository" href="/concept/tool-repository">
+  The Tool Repository is a centralized collection of tools used by agents to
+  complete tasks. It includes general-purpose tools, which offer broad
+  functionality, and app-specific tools, which are custom-built to meet unique
+  application requirements. Each tool follows a structured input and output
+  schema for consistent integration.
+</Card>
+<Card title="Agents" href="/concept/agents">
+  Agents are specialized AI entities configured with profiles that determine
+  their behavior, workflow type, and the tools they can access. Agents process
+  user requests by selecting and sequencing tools.
+</Card>
+<Card title="Dynamically Generated Pipelines" href="/concept/pipelines">
+  Agents generate pipelines by breaking down complex tasks into subtasks, each
+  associated with a specific tool. These pipelines follow an
+  Input-Process-Output (IPO) loop with error-handling and self-correction
+  capabilities, allowing the agent to adapt dynamically and handle complex
+  workflows.
+</Card>
+<Card title="Vectorization" href="/concept/vectorization">
+  Vectorization is the process of transforming content into vector embeddings to
+  enable efficient and semantically relevant retrieval.
+</Card>

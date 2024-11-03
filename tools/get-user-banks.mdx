@@ -1,0 +1,47 @@
+---
+title: Get User Banks
+---
+
+## Description
+The Get User Banks tool retrieves the banks associated with the current user. Each bank record includes the bank’s name and logo. 
+
+<Tip>
+**Database Connection**: Managed by Prisma Client  
+</Tip>
+
+## Arguments
+- None
+
+## Example Configuration
+```typescript
+export const getUserPartners = {
+    type: "function" as const,
+    function: {
+        name: "get_user_partners",
+        description: "Get the partners of the current user. Partners are companies or people that the user has financial relationships with. Can be an addressee or a sender of transactions. The result is a string with the partner names separated by commas.",
+    },
+};
+```
+
+## Response Handling
+
+- Successful Response: If banks are found, the function returns an array of bank objects, each containing:
+    - `name`: The bank’s name.
+    - `logo`: The URL or path to the bank’s logo.
+- Error Handling: If no banks are found, an empty array is returned.
+
+Example Response
+```json
+{
+    "result": [
+        {
+            "name": "Sample Bank",
+            "logo": "https://example.com/sample-bank-logo.png"
+        },
+        {
+            "name": "Finance Corp",
+            "logo": "https://example.com/finance-corp-logo.png"
+        }
+    ]
+}
+```

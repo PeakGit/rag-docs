@@ -1,0 +1,63 @@
+---
+title: Get User Bank Accounts
+---
+
+## Description
+The Get User Bank Accounts tool retrieves the bank accounts and their balances for the current user. This tool provides essential information about each bank account, including IBAN, account type, currency, balance, and additional account information. The results are structured in a JSON format, making it straightforward for agents to access and display the data.
+
+<Tip>
+**Database Connection**: Managed by Prisma Client  
+</Tip>
+
+## Arguments
+- None
+
+## Example Configuration
+```typescript
+export const getUserBankAccounts = {
+    type: "function" as const,
+    function: {
+        name: "get_user_bank_accounts",
+        description: "Get the bank accounts with balances of the current user. The result is the following JSON structure: {iban: string, type: {name: string}, currency: {name: string}, balance: number, info: string}[]",
+        parameters: {
+            type: "object",
+            properties: {
+                ...INTENTION_PROPERTY,
+            },
+        },
+    },
+};
+```
+
+## Response Handling
+
+- Successful Response: If the bank accounts are retrieved successfully, the function returns:
+    - `userBankAccounts`: A list of bank accounts with details structured as follows:
+        - `iban`: IBAN of the bank account.
+        - `type`: Type of the bank account, with name.
+        - `currency`: Currency associated with the account, with name.
+        - `balance`: Current balance of the account.
+        - `info`: Additional information about the account.
+
+Example Response
+```json
+{
+    "intention": "Retrieve user bank accounts and balances",
+    "userBankAccounts": [
+        {
+            "iban": "DE89370400440532013000",
+            "type": { "name": "Checking" },
+            "currency": { "name": "EUR" },
+            "balance": 1500.75,
+            "info": "Main account"
+        },
+        {
+            "iban": "GB33BUKB20201555555555",
+            "type": { "name": "Savings" },
+            "currency": { "name": "GBP" },
+            "balance": 3000.00,
+            "info": "Savings for future investments"
+        }
+    ]
+}
+```

@@ -1,0 +1,32 @@
+---
+title: Weaviate
+description: "Weaviate Utilization in the RAG Framework"
+---
+## Overview
+Weaviate is a powerful vector database used within the RAG framework to store and retrieve vectorized content with high efficiency. Leveraging Weaviate allows us to manage large volumes of data while ensuring semantic relevance, enabling AI agents to retrieve precise, contextually accurate information. This capability is essential for complex query handling, as it allows us to go beyond simple keyword matches.
+
+## SDK & Client
+We use `JS/TS client v3` to interact with Weaviate. https://weaviate.io/developers/weaviate/client-libraries/typescript/typescript-v3
+
+We use locally hosted Weaviate instance for development and testing.
+
+## Key Components and Configuration
+
+- **Persistence and Access:** Weaviate is configured to persist data to disk, ensuring long-term storage and accessibility. It uses GraphQL for data querying, allowing flexible and powerful data retrieval options.
+- **Vectorizers:** We use `text2VecOpenAI` for generating embeddings with OpenAI’s `text-embedding-3-large` model. This configuration creates semantic embeddings that enable effective similarity-based retrieval. Each document has vectorizations for specific properties:
+    - `title_vector`: Embeds the title of the document to improve relevance when title information is a key part of the query.
+    - `body_vector`: Embeds the main content of the document, ensuring that the core information is accessible during semantic searches.
+    - `context_vector`: Embeds the surrounding context of each document segment to enhance the retrieval of highly relevant content.
+- **Reranker:** We utilize `reranker-transformers` with a cross-encoder model (`cross-encoder-ms-marco-MiniLM-L-6-v2`). This reranking capability enables Weaviate to reorder search results based on contextual relevance, prioritizing the results that best match the user’s intent.
+- **Generative Model:** For some cases, we rely on Weaviate’s generative capabilities to answer questions directly rather than using an LLM defined by the agent. In these instances, we use the `gpt-4o-mini` model, which allows for lightweight generative responses based on stored embeddings.
+
+## Collection Schema
+
+The collection schema defines the structure for storing documents in Weaviate, supporting essential metadata and enhancing retrieval accuracy. Each document contains the following properties:
+
+- `title`: Stores the document title to provide context and improve query relevance.
+- `body`: The primary content of the document, which serves as the main source of information for retrieval.
+- `pageNumber`: Indicates the page number, useful for referencing specific sections within multi-page documents.
+- `fileName`: The name of the file, aiding in document identification and management.
+- `date`: The creation date of the document, which can be used for temporal relevance or chronological sorting.
+- `context`: Captures surrounding context to enrich the semantic understanding of each document segment, improving retrieval precision.

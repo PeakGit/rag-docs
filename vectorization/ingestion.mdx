@@ -1,0 +1,63 @@
+---
+title: Ingestion Service
+---
+
+## Worflow Overview
+
+The Ingestion Service is responsible for adding new data to the RAG system’s vector database, allowing it to be retrieved and used effectively by AI agents. The service processes document files, typically PDFs, and transforms them into vector embeddings by extracting text, preprocessing, chunking, and generating contextual data.
+
+The ingestion process is initiated via a webhook (POST request) and follows these key steps:
+
+<Steps>
+  <Step title="Document Selection">
+    The service iterates through all documents defined in the DOCS array,
+    processing each document individually.
+  </Step>
+  <Step title="Clean Existing Data">
+    To avoid duplication, the `deleteExistingData` function removes any
+    pre-existing records associated with the document being processed. This
+    ensures that only the latest data version is stored in the vector database.
+  </Step>
+  <Step title="Extract Text">
+    - PDF Extraction: The `extractPDF` function is used to read each page of the
+    PDF document, returning an array of pages with their corresponding text and
+    page numbers. 
+    - Text Preprocessing: Each page’s text is cleaned and
+    preprocessed using `preprocessText`, removing unnecessary elements and
+    improving the quality of the ingested data. 
+  </Step>
+  <Step title="Contextual Chunking">
+    - Surrounding Context: Each page’s chunked text is enriched by including
+    text from neighboring pages. This approach ensures that each chunk retains
+    meaningful context.
+    - Chunk Generation: The `chunkText` function splits the cleaned text into
+    manageable segments that can be indexed individually in the vector database.
+    - Context Generation: Each chunk is processed with the `generateContext`
+    function, which uses surrounding text to add context, enhancing the relevance of retrieval results.
+  </Step>
+  <Step title="Data Ingestion">
+    After chunking and contextualizing the data, the service prepares it for
+    insertion:
+    - **Batch Processing:** To optimize performance, data is inserted into the
+    vector database in batches (default batch size: 100). Each batch consists of
+    multiple data objects, each containing:
+      - `body`: The chunked text
+      - `context`: The contextual information surrounding the chunk
+      - `pageNumber`: The page number of the chunk within the document
+      - `fileName`: Document identification 
+      - `title`: The title of the original document
+  </Step>
+  <Step title="Concurrent Processing">
+  The ingestion service is designed to handle multiple API calls concurrently, with a limit of five calls at a time (`pLimit(5)`). This optimizes processing time without overloading the system.
+  </Step>
+</Steps>
+
+## Response
+The service returns a JSON response indicating the success or failure of the ingestion process:
+
+```json
+{
+  "success": true,
+  "message": "Data ingested successfully"
+}
+```

@@ -1,0 +1,76 @@
+---
+title: Retrieval Tool
+description: "Retrieval Tool in the RAG Framework"
+---
+
+## Description
+The Knowledge Retrieval tool is a core component of the RAG framework, designed to access and retrieve relevant information from the vector database (Weaviate). This tool enables AI agents to query the knowledge base stored in Weaviate, retrieving contextually accurate information for user queries by leveraging vector similarity and re-ranking for improved relevance.
+
+## Purpose
+The Knowledge Retrieval tool accesses our knowledge base stored in Weaviate, a vector database optimized for semantic search. By retrieving vectorized content from Weaviate, the tool ensures that AI agents respond with precise and relevant information, based directly on stored data rather than model-generated guesses. 
+
+## Configuration and Structure
+The Knowledge Retrieval tool is implemented as a function with the following structure:
+- Name: retrieve_knowledge
+- Description: Instructs the AI agent to use this tool exclusively for accessing the knowledge base in Weaviate. It emphasizes the importance of basing responses entirely on retrieved information.
+
+### Arguments
+
+- `user_input (string)`: The main user query, required to initiate the retrieval process within the vector database.
+- `hypothetical_answer (string)`: An optional field where the agent provides a hypothetical answer to enhance the context of the query. This is appended to the query, increasing retrieval accuracy.
+- `intention (from INTENTION_PROPERTY)`: A description of the user’s intention, which helps guide the retrieval focus.
+
+### Example Configuration
+
+```typescript
+export const retrieveKnowledge = {
+    type: "function",
+    function: {
+        name: "retrieve_knowledge",
+        description: "Always use this tool to access the knowledge base and respond based on provided information. Always use all the information provided from this tool.",
+        parameters: {
+            type: 'object',
+            properties: {
+                user_input: {
+                    type: 'string',
+                    description: 'The user input to retrieve knowledge from the knowledge base',
+                },
+                hypothetical_answer: {
+                    type: 'string',
+                    description: 'Given the user query, provide a detailed and informative answer. Use the same language as the user input.',
+                },
+                ...INTENTION_PROPERTY
+            },
+            required: ['user_input', 'hypothetical_answer'],
+        },
+    },
+};
+```
+
+### Retrieval Process
+
+The Knowledge Retrieval tool utilizes Weaviate’s vector database capabilities to execute the following steps:
+
+<Steps>
+    <Step title="Generate Query">
+        The tool combines user_input with an optional hypothetical_answer to form a detailed query, enhancing the retrieval of relevant results by adding context.
+    </Step>
+    <Step title="Vector Similarity Search">
+        The query is sent to Weaviate, where a nearText search is performed on the body_vector field of our knowledge base (RESOURCE_COLLECTION). This vector similarity search uses embeddings to match the query with semantically similar documents, retrieving up to 50 potential matches based on their relevance to the query.
+    </Step>
+    <Step title="Re-ranking">
+        To improve the accuracy of the results, Weaviate’s reranker-transformers module re-ranks the initial matches based on the body property, ensuring that the most contextually relevant documents are prioritized in the final output.
+    </Step>
+    <Step title="Top Results">
+        The tool extracts the top 5 results for the agent’s response, ensuring the delivery of precise and relevant information.
+    </Step>
+</Steps>
+
+## Return value
+
+The Knowledge Retrieval tool returns an object containing:
+
+- `intention`: The user’s intention, as specified in the input.
+- `result`: An object containing:
+    - `intention`: Mirrors the input intention.
+    - `knowledge`: Contains the retrieved results from Weaviate, with metadata like distance and score to indicate relevance.

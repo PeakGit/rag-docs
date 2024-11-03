@@ -1,0 +1,33 @@
+---
+title: Vectorization
+description: "How the RAG framework consumes content"
+---
+
+Vectorization is a core process within the RAG framework, transforming diverse types of content into vector embeddings to enable efficient retrieval and relevance ranking. By leveraging vectorization, the RAG framework can semantically interpret user queries and match them with relevant information across multiple data sources. This capability allows agents to retrieve, rank, and present information with high contextual accuracy, a process supported by the Knowledge Retrieval tool.
+
+## Key Components of Vectorization
+
+- **Ingestion:** The vectorization process begins with data ingestion, where content from various sources is collected, processed, and transformed into embeddings. Ingested content may include PDFs, web pages, structured data feeds, or other relevant documents, allowing the framework to handle both static and dynamic information.
+- **Chunking:** For lengthy documents such as PDFs, the framework uses a chunking technique to break down the text into manageable segments. Each chunk is independently vectorized, allowing agents to retrieve specific sections of a document based on the query’s relevance, making responses more targeted and precise.
+- **External Data Sources:** In addition to static data, the RAG framework can ingest information from real-time external sources, such as RSS feeds or APIs, enabling it to keep content up-to-date and ensure users receive the most current and relevant information.
+
+## Vectorization Models and Techniques
+
+To generate high-quality embeddings and perform accurate retrieval, the RAG framework uses a combination of advanced models and techniques, each optimizing different aspects of the vectorization process:
+
+- **OpenAI Embeddings:** OpenAI models provide embeddings that capture semantic meaning across a wide range of topics, enabling the RAG framework to understand and respond to complex queries effectively.
+- **Bi-Encoder Models:** Bi-Encoder models generate embeddings for both queries and documents independently, enabling efficient similarity matching. This setup is particularly useful for large datasets, as it allows for fast retrieval by matching query vectors with document vectors in the vector database.
+- **BM25 and Term Frequency (TF):** Traditional retrieval algorithms like BM25 and Term Frequency (TF) help rank documents based on word frequency and relevance. These algorithms provide an initial set of document matches at a lexical level, which are then refined using vector similarity.
+- **Reranker:** After initial retrieval, the reranker model re-evaluates results for improved relevance. By using additional context from the query, the reranker adjusts the ranking of documents, enhancing specificity in the retrieved information.
+
+## Vector Database: Weaviate
+
+The RAG framework uses Weaviate, a vector database, to store and manage embeddings efficiently. Weaviate enables the framework to perform vector similarity searches, retrieving content based on the closeness of vectors rather than just keyword matching.
+
+### Vector Similarity
+
+When a query is made, the RAG framework converts the query into a vector and performs a similarity search within Weaviate to find the most relevant document chunks. Vector similarity measures, such as cosine similarity or Euclidean distance, enable the framework to rank content based on semantic relevance rather than surface-level keyword matches.
+
+### Knowledge Retrieval Tool
+
+As a tool within the RAG framework, Knowledge Retrieval leverages vectorization to enhance the accuracy and relevance of information retrieved for a given query. By using vector embeddings and similarity search in Weaviate, the Knowledge Retrieval tool can efficiently locate the most contextually relevant document chunks.

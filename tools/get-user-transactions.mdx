@@ -1,0 +1,160 @@
+---
+title: Get User Transactions
+---
+
+## Description
+The Get User Transactions tool retrieves transactions for the current user with various filter options (e.g., currencies, banks, companies, partners, date range). If the number of transactions exceeds a threshold, they are saved to a temporary file on the filesystem, allowing for efficient data handling, especially with large datasets. The file response includes a structured schema, allowing other tools (e.g., Python processing tools) to understand and access the dataset efficiently.
+
+<Tip>
+**Database Connection**: Managed by Prisma Client  
+</Tip>
+
+
+## Arguments
+
+- `currencies (array[string])`: List of currency codes to filter transactions.
+- `banks (array[string])`: List of banks to filter by. The `get_user_banks` tool can provide available bank options.
+- `companies (array[string])`: List of companies to filter by. Use `get_user_companies` to retrieve available companies.
+- `partners (array[string])`: List of partners (companies or individuals) associated with transactions. Use `get_user_partners` to obtain partner options.
+- `start_date (string)`: Start date for filtering transactions.
+- `end_date (string)`: End date for filtering transactions.
+- `limit (number)`: Limits the number of transactions returned. Default is 20,000 if unspecified.
+
+## Example Configuration
+```typescript
+export const getUserTransactions = {
+    type: "function" as const,
+    function: {
+        name: "get_user_transactions",
+        description: "Get all transactions of the current user. You can filter by currencies, banks, companies, partners, start date and end date. Please take into account that multiple currencies is used in the transactions.",
+        parameters: {
+            type: 'object',
+            properties: {
+                ...INTENTION_PROPERTY,
+                currencies: {
+                    type: 'array',
+                    description: 'Currencies to filter by.',
+                    items: {
+                        type: 'string',
+                        description: 'Currency code',
+                    },
+                },
+                banks: {
+                    type: 'array',
+                    description: 'Banks to filter by. Use get_user_banks tool to get the list of banks',
+                    items: {
+                        type: 'string',
+                        description: 'Bank name',
+                    },
+                },
+                companies: {
+                    type: 'array',
+                    description: 'Companies to filter by. Use get_user_companies tool to get the list of companies',
+                    items: {
+                        type: 'string',
+                        description: 'Company name',
+                    },
+                },
+                partners: {
+                    type: 'array',
+                    description: 'Partners to filter by. Use get_user_partners tool to get the list of partners. Partners are companies or people that the user has financial relationships with. Can be an addressee or a sender of transactions.',
+                    items: {
+                        type: 'string',
+                        description: 'Partner name',
+                    },
+                },
+                start_date: {
+                    type: 'string',
+                    description: 'Start date to filter by',
+                },
+                end_date: {
+                    type: 'string',
+                    description: 'End date to filter by',
+                },
+                limit: {
+                    type: 'number',
+                    description: 'Limit the number of transactions to return. Only use if the user need limited number of transactions. Default is 20000.',
+                },
+            },
+            required: ['intention'],
+            additionalProperties: false,
+        },
+    },
+};
+```
+## Response Handling
+Successful Response: If the number of transactions is:
+    - Small (less than or equal to 50): Returns a structured JSON object with a transactions_list.
+    - Large (greater than 50): Saves transactions to a temporary file and returns the file path.
+- Error Handling: If the retrieval or file saving fails, an error message is logged, and details are returned for debugging.
+
+## Example Usage
+
+1. User Query: “Retrieve my transactions from January 2023, filtered by EUR currency.”
+2. Agent Invocation: The agent calls get_user_transactions with:
+    - currencies: ["EUR"]
+    - start_date: "2023-01-01"
+    - end_date: "2023-01-31"
+    - intention: "Retrieve user transactions in EUR for January 2023"
+3. Response:
+    - If ≤ 50 transactions are found, returns as a JSON list.
+- If > 50 transactions are found, returns a file path for the saved data.
+
+Example Response (Small Dataset)
+```json
+{
+  "result": {
+        "data_type": "transactions_list",
+        "transactions": [
+            {
+                "id": "1",
+                "amount": 1500,
+                "transaction_date": "2023-01-10",
+                "partner": { "name": "John Doe Inc." },
+                "currency": { "name": "EUR" },
+                "bankAccount": {
+                    "account_number": "DE89370400440532013000",
+                    "contracts": [
+                        {
+                            "bank": { "name": "Sample Bank" },
+                            "company": { "name": "User Company" }
+                        }
+                    ]
+                }
+            }
+        ],
+        "count": 1
+    },
+    "intention": "Retrieve user transactions in EUR for January 2023"   
+}
+```
+
+Example Response (Large Dataset)
+```json
+{
+    "intention": "Retrieve user transactions in EUR for January 2023",
+    "result": {
+        "data_type": "file_path_to_transactions",
+        "file_path": "/tmp/user123_abc123.json",
+        "count": 1200,
+        "structure": [
+            {
+                "id": "string",
+                "amount": "number",
+                "transaction_date": "string",
+                "partner": { "name": "string" },
+                "currency": { "name": "string" },
+                "bankAccount": {
+                    "account_number": "string",
+                    "contracts": [
+                        {
+                            "bank": { "name": "string" },
+                            "company": { "name": "string" }
+                        }
+                    ]
+                }
+            }
+        ]
+    }
+}
+```

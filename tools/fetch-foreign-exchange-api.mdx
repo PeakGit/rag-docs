@@ -1,0 +1,57 @@
+---
+title: Fetch Foreign Exchange API
+---
+
+## Description
+The Fetch Foreign Exchange API tool retrieves foreign exchange rates for a specified base currency using the external ExchangeRate-API service. This tool outputs conversion rates for multiple currencies, enabling agents to perform accurate financial calculations.
+
+<Tip>
+**API Used**: [ExchangeRate-API](https://www.exchangerate-api.com)  
+**API Key**: Set in `.env` file as `EXCHANGE_RATE_API_KEY`
+</Tip>
+
+## Arguments
+- `baseCurrency (string)`: The base currency code (e.g., USD, EUR, JPY). This currency is used as the reference for exchange rates.
+
+## Example Configuration
+```typescript
+export const fetchForeignExchangeAPI = {
+    type: "function" as const,
+    function: {
+        name: "fetch_foreign_exchange_api",
+        description: "Get all foreign exchange rates for a base currency from finance API. Never use dollar sign or any currency symbol when answering. Just the currency code.",
+        parameters: {
+            type: 'object',
+            properties: {
+                baseCurrency: {
+                    type: 'string',
+                    description: 'Base currency code. Like USD, EUR, JPY, GBP, AUD, CAD, CHF, CNY, HKD, NZD, SEK, KRW, SGD, NOK, MXN, INR, RUB, ZAR, TRY, BRL, TWD, DKK, PLN, THB, ILS, IDR, CZK, AED, ARS, CLP, HUF, etc.',
+                },
+                ...INTENTION_PROPERTY
+            },
+            required: ['baseCurrency'],
+        },
+    },
+};
+```
+
+## Response Handling
+- Successful Response: If the API request is successful, the function returns an object containing:   
+    - `intention`: The intention description provided by the user.
+    - `result`: A list of exchange rates for multiple currencies relative to the base currency.
+- Error Handling: If the API request fails, an error is logged, and an error message is returned, indicating the failure reason.
+
+
+Example Response:
+```json
+{
+    "intention": "Fetch exchange rates for USD",
+    "result": {
+        "EUR": 0.85,
+        "JPY": 110.53,
+        "GBP": 0.72,
+        "AUD": 1.34
+        // Additional currency codes and rates
+    }
+}
+```

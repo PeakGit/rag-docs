@@ -1,0 +1,29 @@
+---
+title: Tool Argument-Based Caching
+---
+
+## Overview
+Tool Argument-Based Caching is a caching mechanism within the RAG framework that stores and retrieves tool results based on the specific arguments passed to each tool. By caching results based on a combination of tool name, user ID, and arguments, this approach allows the framework to deliver efficient, repeatable results for identical requests, reducing redundant processing and improving response times.
+
+This system leverages Redis as the caching backend, storing results with unique keys that are generated based on tool-specific arguments and excluding non-essential arguments, such as `intention`, from the cache key for more consistent retrieval.
+
+## How It Works
+
+1. **Unique Cache Key Generation:**
+   - For each tool call, a unique cache key is generated based on the tool’s name and its arguments.
+   - Before generating the key, the intention argument (if present) is removed, ensuring that only essential parameters affect the caching process.
+   - Example Key Format: `<functionName> + JSON.stringify(argumentsWithoutIntention)`
+2. **Cache Lookup:**
+   - When a tool is called, the cache is checked first for a matching entry using the generated key.
+   - If a cached value exists, it is returned immediately, bypassing the tool call and reducing processing time.
+   - If no cached result is found, the tool is executed, and the result is stored in the cache for future retrieval.
+3. **Tool Call Execution and Caching:**
+   - If a cache hit does not occur, the tool is executed with the provided arguments.
+   - Once the tool returns a result, it is serialized and stored in the cache with the generated key, ensuring the result can be reused for future calls with the same arguments.
+
+
+## Example Usage Scenario
+1.	**User Query:** The user requests recent transactions filtered by a specific date range.
+2.	**Tool Call and Cache Check:**  The `get_user_transactions` tool is called with arguments specifying the date range. The cache key is generated based on the function name and date range.
+3.	**Cache Hit:** If a previous query used the same arguments, the result is returned from the cache.
+4.	**Cache Miss:** If no cache entry is found, the tool executes the query, and the result is cached with the generated key for future requests.

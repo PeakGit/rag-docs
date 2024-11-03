@@ -1,0 +1,86 @@
+---
+title: Get Companies
+---
+
+## Description
+The Get User Companies tool retrieves the companies associated with the current user. For each company, the tool provides details about its contracts, including linked banks and bank account information (balance, owner, and IBAN). The results are structured in a nested JSON format, providing a comprehensive view of the user’s companies and associated financial information.
+
+<Tip>
+**Database Connection**: Managed by Prisma Client  
+</Tip>
+
+## Arguments
+- None
+
+## Example Configuration
+```typescript
+export const getUserCompanies = {
+  type: "function" as const,
+  function: {
+    name: "get_user_companies",
+    description: "Get the companies of the current user. The result is the following JSON structure: {name: string, contracts: {bank: {name: string}, bankAccounts: {balance: number, owner: string | null, iban: string | null}[]}[]}",
+    parameters: {
+      type: "object",
+      properties: INTENTION_PROPERTY
+    },
+  },
+};
+```
+
+## Response Handling
+
+- Successful Response: If companies are retrieved successfully, the function returns:
+    - `intention`: The intention description provided by the user.
+    - `result`: An array of companies, with each company containing:
+        - `name`: The name of the company.
+        - `contracts`: An array of contracts with the following details:
+            - `bank`: The bank associated with the contract, with name.
+            - `bankAccounts`: An array of bank accounts, each containing:
+                - `balance`: The account balance.
+                - `owner`: The owner of the account (or null if not specified).
+                - `iban`: The IBAN of the account (or null if not specified).   
+- Error Handling: If no companies are found, an empty array is returned.
+
+Example Response
+```json
+{
+    "intention": "Retrieve user companies and their contracts",
+    "result": [
+        {
+            "name": "Company A",
+            "contracts": [
+                {
+                    "bank": { "name": "Sample Bank" },
+                    "bankAccounts": [
+                        {
+                            "balance": 5000,
+                            "owner": "John Doe",
+                            "iban": "DE89370400440532013000"
+                        },
+                        {
+                            "balance": 15000,
+                            "owner": null,
+                            "iban": "DE89370400440532013001"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Company B",
+            "contracts": [
+                {
+                    "bank": { "name": "Finance Bank" },
+                    "bankAccounts": [
+                        {
+                            "balance": 20000,
+                            "owner": "Jane Smith",
+                            "iban": "GB33BUKB20201555555555"
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}
+```

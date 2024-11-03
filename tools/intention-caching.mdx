@@ -1,0 +1,67 @@
+---
+title: Intention-Based Caching
+---
+
+## Overview
+Intention-Based Caching is a caching strategy that stores and retrieves the results of tool calls based on the user’s intention, enabling fast and contextually relevant responses. This caching mechanism is designed to go beyond exact matches, allowing tools to retrieve previously stored results that may partially match or be similar to the current intention, making it useful even for slightly different queries that align in context or purpose.
+
+This flexible approach leverages a Redis-based cache system to store the results of past interactions, enabling tools to recall relevant or partially relevant data for faster responses and optimized processing.
+
+## Key Components
+
+### `retrieveMemory` Tool:
+- **Purpose**: Retrieves stored results based on a specific user intention, but can also identify relevant cached data if the new intention is similar or partially matches a previous one.
+- **Usage**: When the current intention is close to a previous query, this tool can retrieve and return the cached data, even if the intentions aren’t identical, as long as the information is useful.
+- **Code Example**:
+
+```typescript
+export const retrieveMemory = {
+    type: "function" as const,
+    function: {
+        name: "retrieve_memory",
+        description: "Retrieve a tool call result from the previous user conversation by the user intention.",
+        parameters: {
+            type: "object",
+            properties: {
+                intention: {
+                    type: "string",
+                    description: "The intention of the user.",
+                },
+            },
+            required: ["intention"],
+        },
+    },
+};
+
+export async function handleRetrieveMemory(args: { intention: string }, userId: string): Promise<string> {
+    console.log("🔍 Retrieving memory for intention: ", args.intention);
+    try {
+        const memory = await cache.getUserIntentionMemoryItem(userId, args.intention);
+        return memory || "Memory not found";
+    } catch (error) {
+        console.error("Error retrieving memory: ", error);
+        return "Error retrieving memory";
+    }
+}
+```
+### Caching Functions
+- **`storeUserIntentionMemory`**: Stores results based on user intention in the cache, associating each entry with the user’s unique ID.
+- **`getUserIntentionMemoryItem`**: Retrieves cached results based on a specified user intention. If an exact match isn’t found, it attempts to retrieve a relevant memory based on partial matching.
+- **`storeUserToolusageMemory`**: Saves tool usage results hashed by the memory key to prevent duplication and enhance retrieval speed.
+- **Code Example**:
+
+```typescript
+export async function storeUserIntentionMemory(userId: string, memoryKey: string, memory: string) {
+    const intentionMemoryKeyList = `${prefix}:${userId}:memoryKeys`;
+    const intentionMemoryKeyToStore = `${prefix}:${userId}:memory:${memoryKey}`;
+
+    try {
+        await client.rPush(intentionMemoryKeyList, intentionMemoryKeyToStore);
+        await client.set(intentionMemoryKeyToStore, memory);
+        await client.expire(intentionMemoryKeyList, MEMORY_EXPIRATION);
+        await client.expire(intentionMemoryKeyToStore, MEMORY_EXPIRATION);
+    } catch (err) {
+        console.error('Error storing user memory:', err);
+    }
+}
+```

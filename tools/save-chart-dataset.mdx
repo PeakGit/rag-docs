@@ -1,0 +1,59 @@
+---
+title: Save Chart Dataset
+---
+The Save Chart Dataset tool saves a generated dataset for a chart into the database, specifically in the meta JSON field of a message. This tool allows agents to store chart data in a structured format, which can then be used for visualization purposes. The tool requires both the dataset and the type of chart (e.g., pie, column, line) to be specified.
+
+<Tip>
+**Database Connection**: Managed by Prisma Client  
+The dataset is saved to the `meta` field in the `ragMessage` table with the specified chart type.
+</Tip>
+
+
+## Arguments
+- `dataset (string)`: The dataset to save, formatted as a JSON string. The format varies depending on the chartType:
+    - Pie Chart: `[{name: 'name', value: value}, {name: 'name', value: value}]`
+    - Column Chart: `[{name: 'name', value: name}, {name: 'name', value: name}]`
+    - Line Chart: `[{ date: 'YYYY-MM-DD', value: value },{ date: 'YYYY-MM-DD', value: value }]`
+- `chartType (string)`: The type of chart. Accepted values are pie, column-vertical, column-horizontal, and line.
+
+## Example Configuration
+```typescript
+export const saveChartDataset = {
+    type: "function" as const,
+    function: {
+        name: "save_chart_dataset",
+        description: "Save generated dataset for chart into the database to message meta json field. Always include the chart type in your response.",
+        parameters: {
+            type: "object",
+            properties: {
+                dataset: {
+                    type: "string",
+                    description: "The dataset to save as a JSON string. If the chart type is a pie use the following format: [{name: 'name', value: value}, {name: 'name', value: value}], if the chart type is a column use the following format: [{name: 'name', value: name}, {name: 'name', value: name}], if the chart type is a line use the following format: [{ date: 'YYYY-MM-DD', value: value },{ date: 'YYYY-MM-DD', value: value }]",
+                },
+                chartType: {
+                    type: "string",
+                    description: "The type of chart to save. Accepted values are: pie, column-vertical, column-horizontal, line.",
+                },
+            },
+            required: ["dataset", "chartType"],
+            strict: true,
+            additionalProperties: false,
+        },
+    },
+};
+```
+
+## Example Usage
+1. **User Query**: “Generate a pie chart for my recent expenses.”
+2. **Agent Invocation1**: The agent calls `get-user-transactions` to get the transactions data.
+3. **Agent Invocation2**: The agent calls `save_chart_dataset` with the following parameters:
+    - dataset: `[{ "name": "Food", "value": 300 }, { "name": "Transport", "value": 150 }]`
+    - chartType: pie
+3. **Response**: The tool saves the chart dataset and returns a success message.
+
+Example Response
+```json
+{
+    "result": "SVG chart saved"
+}
+```

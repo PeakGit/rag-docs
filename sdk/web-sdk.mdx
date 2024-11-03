@@ -1,0 +1,32 @@
+---
+title: 'Web SDK'
+description: 'alias: Mercury Assistant SDK for Web'
+---
+
+<Note>
+  This SDK uses the previous version of RAG Framework as backend. We are working on updating it to the new version.
+</Note>
+
+## JavaScript SDK for Web Integration
+
+1. **Shadow DOM Technology:**
+- Renders HTML elements independently, preserving your app’s design.
+- Limitations: Currently, only system fonts are supported.
+2. **Chat Window Integration:**
+- Embed the chat window in any HTML element as a full-page view, a floating button, or a sidebar, providing flexible integration options.
+3. **Chat Behavior Management:**
+- The SDK manages the chat session automatically. When a user initiates a conversation, a thread ID is saved in LocalStorage, allowing the chat to persist across sessions.
+4. **Proactive Suggestions:**
+- Our AI assistant can suggest questions proactively, guiding the conversation and enhancing the user experience. This feature can be disabled through the SDK settings.
+
+## Configuration Options
+- `elementId`: The HTML element ID where the chat will be embedded.
+- `icon`: The URL of an image for the chat interface (required).
+- `title`: Title for the chat window (optional).
+- `description`: Subtitle for the chat window (optional).
+- `autofocus`: Enables focus on the chat input upon rendering (boolean, default: false).
+- `primaryColor`: Sets the color of user messages and the title in hex (default: #000).
+- `secondaryColor`: Sets the color of assistant messages and the subtitle in hex (default: #DDD).
+- `actionColor`: Color for buttons and links in hex (default: #0000EE).
+- `useCitations`: Displays citations above assistant messages (boolean, default: false).
+- `useSuggestions`: Enables proactive question suggestions by the assistant (boolean, default: false).

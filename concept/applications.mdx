@@ -1,0 +1,22 @@
+---
+title: Applications
+description: "How applications use the RAG framework"
+---
+
+The RAG framework is designed to adapt to the unique requirements of various applications (like Financial Wellness or Synxronix) by allowing configurable settings for AI agent interactions.
+
+Each application has an owns instance of the RAG framework, with its own configuration.
+
+Key configuration options:
+
+- **Application-Specific System Prompt:** Application-Specific System Prompt: Each application can define a unique system prompt to set the tone, style, and context in which agents respond.
+- **App-Specific Tools:** Applications can define and develop custom tools tailored to their specific requirements. These tools may include custom integrations, such as linking the application to external systems or databases, to meet unique needs.
+- **Enabled Agents and General Tools:** Applications can configure which AI agents and tools from the tool repository are enabled. Additionally, each application can set app-specific configurations for each enabled tool (if configurable), customizing behavior to align with the application's workflow and data requirements.
+- **LLM models:** Applications have control over which LLM models are used for each agent and LLM-based tool. This flexibility allows for selecting models that meet specific performance, cost, or language requirements for each app.
+
+<Tip>
+  With app-specific configuration, each application can set different API
+  endpoints and keys for each tool in use. For example, if your application uses
+  a news reader tool, you can set up a custom RSS feed URL in the application's
+  configuration, without modifying the tool itself.
+</Tip>

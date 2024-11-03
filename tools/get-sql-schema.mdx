@@ -1,0 +1,60 @@
+---
+title: Get SQL Schema
+---
+
+## Description
+The Get SQL Schema tool retrieves the SQL schema of the database in a filtered format. It reads the schema from a JSON file, excludes certain tables and properties, and returns a cleaned schema. This enables agents to understand the structure of the database without exposing sensitive or unnecessary fields.
+
+<Tip>
+**File Location**: `prisma/json-schema/json-schema.json`  
+The JSON schema file contains the database structure as exported by Prisma.
+</Tip>
+
+## Arguments
+- No arguments: This tool does not require any arguments.
+
+## Example Configuration
+```typescript
+export const getSQLSchema = {
+    type: "function" as const,
+    function: {
+        name: "get_sql_schema",
+        description: "Get the SQL schema of the database",
+    },
+};
+```
+
+### Processing and Exclusions
+1. Schema Reading: The function reads the schema from the JSON file located at `prisma/json-schema/json-schema.json`.
+2. Excluded Properties: Properties such as `id`, `createdAt`, `updatedAt`, and others are removed from the schema to prevent unnecessary exposure.
+3. Excluded Tables: Certain tables, like `_prisma_migrations`, `Invitation`, and `Session`, are excluded entirely from the returned schema.
+4. Schema Cleaning: The function iterates over the schema, removing specified properties and tables before returning the final, filtered schema.
+
+## Response Handling
+- Successful Response: If the schema is successfully read and filtered, the function returns an object containing:  
+    - `schema`: The cleaned schema with excluded properties and tables removed.
+- Error Handling: If the schema file cannot be read or parsed, an error is logged, and an error message is returned.
+
+Example Response
+```typescript
+{
+    "schema": {
+        "User": {
+            "properties": {
+                "name": { "type": "string" },
+                "age": { "type": "integer" },
+                "address": { "type": "string" }
+                // Additional properties, excluding specified fields
+            }
+        },
+        "Product": {
+            "properties": {
+                "name": { "type": "string" },
+                "price": { "type": "number" }
+                // Additional properties, excluding specified fields
+            }
+        }
+        // Additional tables, excluding specified tables
+    }
+}
+```

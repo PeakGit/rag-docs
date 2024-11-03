@@ -1,0 +1,154 @@
+---
+title: 'React Integration'
+---
+
+## Introduction
+
+Our React Chat Client Components allows you to embed a fully interactive chat interface into any React application. Built with React components and hooks, this SDK manages chat functionality - including thread creation, message handling, and chart data display - providing a flexible way to implement AI-assisted chat features.
+
+## Key Components and Hooks
+
+###	Messages Component
+Displays the chat history, showing user and assistant messages. The component can also render charts and other visual data elements alongside messages if configured.
+
+Properties:
+
+- `messages` (MessageInterface[]): Array of messages in the chat conversation.
+- `MessageInterface`:
+  - `id` (string): Unique identifier for each message.
+  - `role` ('user' | 'assistant' | 'system'): Role of the message sender.
+  - `content` (string): The message content, typically in markdown format.
+  - `ragThreadId` (string): Thread ID for session tracking.
+  - `createdAt` (string): Timestamp indicating when the message was created.
+  - `meta` (optional):
+    - `chart`: Contains data for charts associated with the message.
+    - `dataset` (string): JSON string representing chart data.
+    - `chartType` (string): Type of chart (e.g., pie, line, column).
+  - `chartDataMap` (React.ReactNode): A map of chart data nodes, keyed by message ID, allowing dynamic chart rendering within the chat.
+
+Sample usage:
+```jsx
+<Messages messages={messages} chartDataMap={chartDataMap} />
+```
+
+### ChatForm Component
+Provides a simple input field and submission button for user messages, making it easy for users to send messages to the assistant.
+
+Properties:
+
+- `onSubmit` ((message: string) => void): Callback function that handles the message submission when the user sends a message.
+- `isLoading` (boolean): Disables the input field and submit button when set to true, indicating that a message is being processed.
+
+Sample usage:
+```jsx
+<ChatForm onSubmit={handleSubmit} isLoading={isLoading} />
+```
+
+### useChatThread Hook
+
+The useChatThread hook manages the chat thread’s state, creating a new thread if needed and persisting it with LocalStorage. This hook also handles message submission and manages responses from the assistant.
+
+Properties:
+
+- `createThread`: Function to initialize a new chat thread and return its ID.
+- `loadMessages`: Function to load messages for an existing thread.
+- `fetchLastAssistantMessage`: Function to fetch the last message from the assistant.
+- `sendMessage`: Function to send a message in the current thread.
+
+Returned Values:
+
+- `messages`: Array of chat messages in the thread.
+- `setMessages`: Function to update the messages state.
+- `isLoading`: Indicates if a message is currently being processed.
+- `handleSubmit`: Handles message submission.
+- `ragThreadId`: The unique thread ID for the current chat session.
+
+Example usage:
+```jsx
+const { messages, setMessages, isLoading, handleSubmit, ragThreadId } = useChatThread({
+  createThread,
+  loadMessages,
+  fetchLastAssistantMessage,
+  sendMessage,
+});
+```
+
+### useChartData
+
+The useChartData hook dynamically generates and displays charts based on message metadata. It uses chartType to determine the chart style (pie, column, or line) and maps the rendered chart to the corresponding message ID.
+
+Parameters:
+
+- `messages`: Array of chat messages, each containing optional metadata for chart rendering.
+- `chartDataMap`: A map of rendered charts keyed by message ID.
+- `setChartDataMap`: Function to update chartDataMap when a new chart is rendered.
+
+Example usage:
+```jsx
+useChartData(messages, chartDataMap, setChartDataMap);
+```
+
+### Full SDK Example Usage
+
+Here’s how to combine these components and hooks in a simple chat interface:
+
+```jsx
+'use client';
+
+import React, { useRef, useEffect, useState } from 'react';
+import Messages from '@/lib/rag/client/components/Messages';
+import ChatForm from '@/lib/rag/client/components/ChatForm';
+import { useChatThread } from '@/lib/rag/client/hooks/useChatThread';
+import { useChartData } from '@/lib/rag/client/hooks/useCharts';
+import { DEMO_USER_ID } from '@/lib/rag/constants';
+
+export default function SimpleChatPage() {
+  const messagesEndRef = useRef(null);
+  const [chartDataMap, setChartDataMap] = useState<Record<string, React.ReactNode>>({});
+
+  const {
+    messages,
+    setMessages,
+    isLoading,
+    handleSubmit,
+    ragThreadId,
+  } = useChatThread({
+    createThread: async () => {
+      const response = await fetch('/api/digital-accountant/thread', { method: 'POST' });
+      return await response.json();
+    },
+    loadMessages: async (threadId) => {
+      const response = await fetch(`/api/digital-accountant/thread/${threadId}`);
+      return await response.json();
+    },
+    fetchLastAssistantMessage: async (threadId) => {
+      const response = await fetch(`/api/digital-accountant/thread/${threadId}/lastAssistantMessage`);
+      return await response.json();
+    },
+    sendMessage: async (input, messages, threadId) => {
+      return await fetch('/api/digital-accountant', {
+        method: 'POST',
+        body: JSON.stringify({ messageRequest: input, conversationHistory: messages, ragThreadId: threadId }),
+      });
+    },
+  });
+
+  useChartData(messages, chartDataMap, setChartDataMap);
+
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [messages]);
+
+  return (
+    <div className="flex flex-col min-h-full h-full">
+      <h2 className="text-xl font-bold">Chat</h2>
+
+      <Messages messages={messages} chartDataMap={chartDataMap} />
+
+      <ChatForm onSubmit={handleSubmit} isLoading={isLoading} />
+
+      <div ref={messagesEndRef} />
+    </div>
+  );
+}
+```

@@ -1,0 +1,35 @@
+---
+title: Tool Repository
+---
+
+The Tool Repository is a centralized collection of tools that RAG framework agents use to perform specific tasks. Each tool is designed to be modular and reusable, enabling agents to handle diverse requests with precision and efficiency. The repository includes both general tools - offering functionality applicable across different applications - and app-specific tools, which are custom-built to address unique application requirements.
+
+## Tools Overview
+
+Each tool in the repository is designed with a strict input and output schema, ensuring that it can be used consistently and accurately by agents. This structured approach enables tools to integrate seamlessly into Dynamically Generated Pipelines, where agents call tools in sequence to complete complex tasks.
+
+- **Tool Instructions:** Each tool comes with a unique set of instructions that define how it can be used, outlining its purpose, expected inputs, and potential outputs. These instructions serve as guidance for the agent, helping it understand when and how to deploy the tool effectively within a given pipeline.
+
+- **Input Arguments:** Tools specify input arguments with detailed instructions, enabling agents to call the tool correctly and ensuring that the tool receives all necessary data to complete its function. These arguments include details such as data type, expected format, and validation requirements.
+
+- **System-Wide Arguments:** Tools can use system-wide arguments, which are used to configure the tool's behavior. For example, the `Get Transactions` tool requires a `user_id` argument, which is used to identify which user's company's transactions to retrieve. Other important system-wide argument is `intention` which is a generated string that describes the purpose of the tool call with simple English words.
+
+- **Programmatic Processes:** Within each tool, a series of programmatic processes fulfill the specified task. These processes can involve data retrieval, calculations, content generation, and more, depending on the tool’s purpose. (For more on how these processes operate within task sequences, see Dynamically Generated Pipelines.)
+
+## Types of Tools
+
+### General Tools
+
+General tools provide foundational functionality that can be applied across multiple applications, making them adaptable to a wide range of use cases. These tools typically require minimal configuration and can be enabled for various agents. Examples:
+
+- **Knowledge Retrieval:** Tools that fetch data from vector databases.
+- **Python Interpreter:** Tools that write and execute Python code and return the output.
+- **Run SQL:** Tools that write and execute SQL code and return the output.
+- **Translate Text:** Tools that translate text from one language to another. 
+
+### App-Specific Tools
+
+App-specific tools are custom-developed to address the specialized needs of individual applications. Examples for Education Platform specific tools:
+
+- **Feedback Generation:** Tools that generate feedback based on a given input.
+- **Gamification:** Tools that generate gamification scores based on a given input.

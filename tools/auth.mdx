@@ -1,0 +1,18 @@
+---
+title: Authentication
+description: User Handling in the Tool Repository
+---
+
+## Description
+The Tool Repository manages tool execution within the RAG framework, passing a system-wide `userId` argument to each tool. This ensures that all tools can access user-specific data, particularly when querying databases, such as through Prisma queries. 
+
+## User ID in Tool Calls
+The `userId` is injected into each tool call within the repository, ensuring that every tool can incorporate user-specific context directly into its queries. This is particularly important for tools that retrieve or manipulate data in databases, as it ensures only relevant data associated with the user is accessed.
+
+## Example of a Tool Call with User ID
+In the handleConversation function, the userId is retrieved and passed to the handleToolCall function along with each tool call. This function handles the execution of tools by:
+1.	Locating the appropriate tool based on its name.
+2.	Parsing the arguments.
+3.	Executing the tool’s handler with the userId passed as an argument.
+This allows each tool, such as `get_user_transactions`, `get_user_organization`, or `get_user_companies`, to filter results based on the user’s ID within database queries.
+

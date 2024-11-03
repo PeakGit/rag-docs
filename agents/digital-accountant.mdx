@@ -1,0 +1,18 @@
+---
+title: Digital Accountant
+description: "An agent that provides financial analysis and insights"
+---
+
+## Purpose
+
+The Digital Accountant is designed to deliver financial insights by retrieving and processing transaction data. This agent interprets queries about user or company financial information, handling complex tasks like data filtering, currency conversion, and chart generation.
+
+The Digital Accountant uses a **Conversational** workflow type, functioning as a chat application to engage with users in real time. Additionally, it has **Structured Data** capabilities, enabling it to generate charts, tables, and other structured outputs based on retrieved data.
+
+## Key Capabilities
+
+- **Data Access:** The Digital Accountant relies on application-specific tools to retrieve transaction data and other financial details. These tools ensure that the agent pulls accurate and relevant information for each query.
+- **Python Interpreter:** For complex calculations or data processing, the agent can write and execute Python code. This capability is especially useful for handling advanced calculations or analyzing large datasets.
+- **File Handling:** When data volumes exceed prompt limitations (such as a long list of transactions), the agent uses the file system to save data. This allows the Python interpreter to access and process it in subsequent steps, ensuring efficient handling of large datasets.
+- **Knowledge Retrieval:** If a query doesn’t align with the available tools, the agent utilizes the Retrieve Knowledge tool to find relevant information. This ensures that the agent never relies solely on its own knowledge, enhancing the accuracy and reliability of responses.
+- **Chart Generation:** For queries requiring visual representation, the Digital Accountant generates datasets after converting financial data to a common currency. It selects the appropriate chart type based on data volume and saves the dataset with the designated tool. This allows the agent to produce insights in a format that is easy to interpret, such as line charts for time series data or pie charts for smaller datasets.

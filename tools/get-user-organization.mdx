@@ -1,0 +1,42 @@
+---
+title: Get Organization
+---
+
+## Description
+The Get User Organization tool retrieves the name of the organization associated with the current user. This tool checks for active organization access and returns the name of the organization. If no active organization is found, the result defaults to "None".
+
+<Tip>
+**Database Connection**: Managed by Prisma Client  
+</Tip>
+
+## Arguments
+- None
+
+## Example Configuration
+```typescript
+export const getUserOrganization = {
+  type: "function" as const,
+  function: {
+    name: "get_user_organization",
+    description: "Get the organization name of the current user. The result is a string with the organization name.",
+    parameters: {
+      type: "object",
+      properties: INTENTION_PROPERTY
+    },
+  },
+};
+```
+
+## Response Handling
+
+- Successful Response: If an active organization is found, the function returns:
+    - `result`: The organization name.
+- Error Handling: If no active organization is found, the function returns "None".
+
+Example Response
+```json
+{
+    "result": "Peak Innovations",
+    "intention": "Retrieve the user's organization name"
+}
+```

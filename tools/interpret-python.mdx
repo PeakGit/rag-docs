@@ -1,0 +1,56 @@
+---
+title: Interpret Python
+---
+
+## Description
+The Interpret Python tool executes Python3 code dynamically and returns the output. This tool is ideal for handling complex mathematical operations, calculations or data manipulation that are easier to execute in Python. It ensures that the final value is printed, making it suitable for direct interpretation and result retrieval.
+
+### Using Files with Interpret Python
+
+For processing large datasets, other tools can save data as files, which Python can then access and manipulate. This is particularly useful for tools like `get-user-transactions`, where data may exceed prompt limits. By storing data as a file, the Interpret Python tool can read, process, and analyze extensive datasets directly from the file system.
+
+<Tip>
+**Execution Environment**: Python3  
+This tool uses Node’s `child_process` module to execute Python code.
+</Tip>
+
+## Arguments
+- `code (string)`: The Python code to be executed.
+
+## Example Configuration
+```typescript
+export const interpretPython = {
+  type: 'function' as const,
+  function: {
+    name: 'interpret_python',
+    description: 'Interpret Python3 code and return the result. Use it in cases when math operations are needed. Always print a value.',
+  },
+  parameters: {
+    description: 'The code should be a valid Python3 code.',
+    parameters: {
+      type: 'object',
+      properties: {
+        code: {
+          type: 'string',
+          description: 'Code to execute.',
+        },
+      },
+      required: ['code'],
+      additionalProperties: false,
+    },
+  },
+};
+```
+
+
+## Response Handling
+- Successful Response: If the code executes without errors, the function returns:
+    - `result`: The output of the Python code execution.
+- Error Handling: If the execution fails, the function returns an error message. This tool includes basic input validation to ensure code is a string and adds print statements if necessary to avoid missing outputs.
+
+Example Response
+```json
+{
+    "result": "123"
+}
+```

@@ -1,0 +1,53 @@
+---
+title: Interpret Typescript
+---
+
+## Description
+The Interpret TypeScript tool executes TypeScript code dynamically within a Node.js environment and returns the output. It is designed for handling simple mathematical operations in TypeScript. 
+
+<Tip>
+**Execution Environment**: Node.js  
+This tool utilizes JavaScript’s `eval` function to execute TypeScript code. **Note**: Using `eval` for code execution can pose security risks, especially with untrusted input.
+</Tip>
+
+
+## Arguments
+- `code (string)`: The TypeScript code to be executed.
+
+## Example Configuration
+```typescript
+export const interpretTypeScript = {
+    type: "function" as const,
+    function: {
+        name: "interpret_typescript",
+        description: "Interpret TypeScript code and return the result. Use it in cases when math operations are needed.",
+    },
+    parameters: {
+        description: "Executes TypeScript code and returns the result. The code should be a valid TypeScript code that can be executed in a Node.js environment. Always use the code to get the data you need from the file system or from the list of transactions. Always return a value.",
+        parameters: {
+            type: "object",
+            properties: {
+                code: {
+                    "type": "string",
+                    "description": "Code to execute.",
+                },
+            },
+            required: ["code"],
+            additionalProperties: false,
+        }
+    },
+};
+```
+
+
+## Response Handling
+- Successful Response: If the code executes without errors, the function returns:
+    - `result`: The output of the TypeScript code execution.
+- Error Handling: If the execution fails, the function returns an error message. This tool includes basic input validation to ensure code is a string and adds print statements if necessary to avoid missing outputs.
+
+Example Response
+```json
+{
+    "result": "123"
+}
+```
