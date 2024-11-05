@@ -20,13 +20,195 @@ description: 'alias: Mercury Assistant SDK for Web'
 - Our AI assistant can suggest questions proactively, guiding the conversation and enhancing the user experience. This feature can be disabled through the SDK settings.
 
 ## Configuration Options
-- `elementId`: The HTML element ID where the chat will be embedded.
-- `icon`: The URL of an image for the chat interface (required).
-- `title`: Title for the chat window (optional).
-- `description`: Subtitle for the chat window (optional).
-- `autofocus`: Enables focus on the chat input upon rendering (boolean, default: false).
-- `primaryColor`: Sets the color of user messages and the title in hex (default: #000).
-- `secondaryColor`: Sets the color of assistant messages and the subtitle in hex (default: #DDD).
-- `actionColor`: Color for buttons and links in hex (default: #0000EE).
-- `useCitations`: Displays citations above assistant messages (boolean, default: false).
-- `useSuggestions`: Enables proactive question suggestions by the assistant (boolean, default: false).
+
+The configuration is stored in one JSON object which you can use to create an assistant, see the `initMercuryChat` here:
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <script src="https://mercuryassistant.blob.core.windows.net/mercury-assistant-sdk/mercury-assistant-latest.js"></script>
+    <link rel="stylesheet" href="https://mercuryassistant.blob.core.windows.net/mercury-assistant-sdk/mercury-assistant-css-latest.css" />
+  </head>
+  <body>
+    <div id="mercury-container"></div>
+    <script>
+      initMercuryChat({
+        containerId: "mercury-container",
+        appId: "your-app-id-here",
+        assistantHeading: "Mercury Assistant",
+        assistantDescription: "Powered by Peak",
+        enableSuggestedQuestions: true,
+        showAssistantMessageReferences: true,
+        assistantImage: "https://emojiisland.com/cdn/shop/products/Robot_Emoji_Icon_7070a254-26f7-4a54-8131-560e38e34c2e_grande.png?v=1571606114",
+        height: "700px",
+      });
+    </script>
+  </body>
+</html>
+```
+
+### Basic Configuration
+```typescript
+{
+  appId: string;                    // Required: Your unique application identifier
+  className?: string;               // Optional: Additional CSS classes for the container
+  height?: string;                  // Optional: Height of the chat window (default: "auto")
+  width?: string;                   // Optional: Width of the chat window (default: "auto")
+}
+```
+
+### Assistant Customization
+```typescript
+{
+  assistantImage?: string;          // Optional: URL for assistant's avatar
+  assistantHeading?: string;        // Optional: Chat window title
+  assistantDescription?: string;    // Optional: Subtitle below the title
+  assistantMessageIcon?: string;    // Optional: Icon shown with assistant messages
+}
+```
+
+### Greeting Configuration
+```typescript
+{
+  greetingMessages?: string[];      // Optional: Array of possible greeting messages
+  streamedGreetingMessage?: {       // Optional: Configuration for streaming greeting
+    message: string;
+    delay?: number;
+  };
+}
+```
+
+### Suggested Questions
+```typescript
+{
+  enableSuggestedQuestions?: boolean;       // Optional: Enable/disable question suggestions
+  randomlySelectedSuggestedQuestions?: number; // Optional: Number of random questions to show
+}
+```
+
+### Visual Customization
+```typescript
+{
+  theme?: {
+    background: string;             // Background color
+    foreground: string;            // Text color
+    primary: string;               // Primary accent color
+    secondary: string;            // Secondary color
+    muted: string;                // Muted elements color
+    // ... additional theme variables
+  };
+}
+```
+
+### Input Field Customization
+```typescript
+{
+  inputField?: {
+    placeholder: string;           // Placeholder text for input
+    className: string;            // Additional CSS classes
+  };
+  sendButton?: {
+    className: string;            // Additional CSS classes for send button
+    iconDirection: "horizontal" | "vertical";  // Send icon orientation
+  };
+}
+```
+
+### References & Citations
+```typescript
+{
+  showAssistantMessageReferences?: boolean;  // Show/hide message references
+  globalReferenceDialog?: {
+    title: string;
+    references: GlobalReference[];          // Array of global references
+  };
+}
+```
+
+### Reset Conversation
+```typescript
+{
+  resetConversationConfig?: {
+    label?: string;              // Reset button label
+    title?: string;              // Confirmation dialog title
+    description?: string;        // Confirmation dialog description
+    cancelLabel?: string;        // Cancel button text
+    confirmLabel?: string;       // Confirm button text
+  };
+}
+```
+
+## Implementation Example
+
+```javascript
+window.initMercuryChat({
+  containerId: "chat-container",
+  appId: "your-app-id",
+  assistantHeading: "Customer Support",
+  assistantDescription: "24/7 AI Assistant",
+  enableSuggestedQuestions: true,
+  theme: {
+    primary: "222.2 47.4% 11.2%",
+    background: "0 0% 100%"
+  },
+  greetingMessages: ["Hello! How can I help you today?"],
+  showAssistantMessageReferences: true
+});
+```
+
+## Storage Management
+
+The SDK automatically manages chat sessions using LocalStorage. You can override this behavior by providing custom storage functions:
+
+```typescript
+{
+  getChatId?: () => string | null;
+  setChatId?: (chatId: string) => void;
+}
+```
+
+## Best Practices
+
+1. **Responsive Design**
+- Always specify either fixed dimensions or responsive values for `height` and `width`
+- Use theme variables for consistent styling across different screen sizes
+
+2. **Performance**
+- Enable `showAssistantMessageReferences` only when citation display is necessary
+- Use `randomlySelectedSuggestedQuestions` to limit the number of displayed suggestions
+
+3. **User Experience**
+- Provide clear greeting messages to guide users
+- Configure reset conversation options for better session management
+- Use appropriate theme colors that match your application's design
+
+4. **Accessibility**
+- Ensure sufficient color contrast in theme configuration
+- Provide meaningful alt text for assistant and message icons
+- Use clear, descriptive labels in the interface
+
+## Common Issues and Solutions
+
+1. **Chat Window Not Appearing**
+- Verify that the container ID exists in your HTML
+- Check if the appId is correct and active
+- Ensure all required configuration options are provided
+
+2. **Styling Conflicts**
+- Use the provided `className` option to add custom styles
+- Utilize the theme configuration for consistent styling
+- Avoid global styles that might affect the chat interface
+
+3. **Local Storage Issues**
+- Implement custom storage functions if needed
+- Clear local storage when testing new configurations
+- Handle storage errors gracefully
+
+4. **Message Reference Display**
+- Enable `showAssistantMessageReferences` for citation display
+- Configure `globalReferenceDialog` for additional context
+- Handle reference loading states appropriately
