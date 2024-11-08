@@ -31,7 +31,7 @@ The ingestion process is initiated via a webhook (POST request) and follows thes
     text from neighboring pages. This approach ensures that each chunk retains
     meaningful context.
     - Chunk Generation: The `chunkText` function splits the cleaned text into
-    manageable segments that can be indexed individually in the vector database.
+    manageable segments that can be indexed individually in the vector database. We chunk at sentence end to maintain the maintain of the text. Chunks are overlapped by 50%.
     - Context Generation: Each chunk is processed with the `generateContext`
     function, which uses surrounding text to add context, enhancing the relevance of retrieval results.
   </Step>
